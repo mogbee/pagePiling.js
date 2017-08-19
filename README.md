@@ -77,6 +77,7 @@ $(document).ready(function() {
 	$('#pagepiling').pagepiling({
 	    menu: null,
         direction: 'vertical',
+        typeZ: false,
         verticalCentered: true,
         sectionsColor: [],
         anchors: [],
@@ -160,6 +161,8 @@ It requires [jQuery UI](http://jqueryui.com/) in order to use any other transiti
 - `animateAnchor`: (default `true`) Defines whether the load of the site when given an anchor (#) will scroll with animation to its destination or will directly load on the given section.
 
 - `direction`: (default `vertical`) Defines if the scroll is vertical or horizontal.
+
+- `typeZ`: (default `false`) Defines if the scroll is scaled.
 
 - `menu`: (default `false`) A selector can be used to specify the menu to link with the sections. This way the scrolling of the sections will activate the corresponding element in the menu using the class `active`.
 This won't generate a menu but will just add the `active` class to the element in the given menu with the corresponding anchor links.

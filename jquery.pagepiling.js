@@ -26,6 +26,7 @@
         // Create some defaults, extending them with any options that were provided
         var options = $.extend(true, {
             direction: 'vertical',
+            typeZ: false,
             menu: null,
             verticalCentered: true,
             sectionsColor: [],
@@ -246,7 +247,8 @@
                 sectionIndex: destination.index('.pp-section'),
                 toMove: destination,
                 yMovement: getYmovement(destination),
-                leavingSection: $('.pp-section.active').index('.pp-section') + 1
+                leavingSection: $('.pp-section.active').index('.pp-section') + 1,
+                opacity: 1
             };
 
             //quiting when activeSection is the target element
@@ -280,11 +282,19 @@
                 }
 
                 v.animateSection = v.activeSection;
+
+                if (options.typeZ) {
+                    v.opacity = 0;
+                }
             }
 
             //scrolling up (moving section down to the viewport)
             else {
-                v.translate3d = 'translate3d(0px, 0px, 0px)';
+                if (options.typeZ) {
+                    v.translate3d = 'scale(1) translate3d(0px, 0px, 0px)';
+                } else {
+                    v.translate3d = 'translate3d(0px, 0px, 0px)';
+                }
                 v.scrolling = '0';
 
                 v.animateSection = destination;
@@ -307,10 +317,10 @@
          */
         function performMovement(v) {
             if (options.css3) {
-                transformContainer(v.animateSection, v.translate3d, v.animated);
+                transformContainer(v.animateSection, v.translate3d, v.animated, v.opacity);
 
                 v.sectionsToMove.each(function () {
-                    transformContainer($(this), v.translate3d, v.animated);
+                    transformContainer($(this), v.translate3d, v.animated, v.opacity);
                 });
 
                 setTimeout(function () {
@@ -392,7 +402,7 @@
          */
         function silentScroll(section, offset) {
             if (options.css3) {
-                transformContainer(section, getTranslate3d(), false);
+                transformContainer(section, getTranslate3d(), false, 1);
             }
             else {
                 section.css(getScrollProp(offset));
@@ -494,10 +504,14 @@
         /**
          * Adds a css3 transform property to the container class with or without animation depending on the animated param.
          */
-        function transformContainer(element, translate3d, animated) {
+        function transformContainer(element, translate3d, animated, opacity) {
             element.toggleClass('pp-easing', animated);
 
             element.css(getTransforms(translate3d));
+
+            if (options.typeZ && opacity !== 'undefined') {
+                element.css('opacity', opacity);
+            }
         }
 
         /**
@@ -973,6 +987,10 @@
         function getTranslate3d() {
             if (options.direction !== 'vertical') {
                 return 'translate3d(-100%, 0px, 0px)';
+            }
+
+            if (options.typeZ) {
+                return 'scale(0) translate3d(0px, -100%, 0px)';
             }
 
             return 'translate3d(0px, -100%, 0px)';
